@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Garage Plate Audit</title>
+  <meta name="description" content="Offline license plate audit tool. All data stays on this device.">
+  <meta name="theme-color" content="#0e1116">
+  <meta name="color-scheme" content="dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Plate Audit">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'; worker-src 'self' blob:; img-src 'self' blob: data:; media-src 'self' blob: mediastream:; style-src 'self' 'unsafe-inline'; connect-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <div>
+          <h1 id="appTitle">HES Garage Audit</h1>
+          <div id="auditPill" class="pill muted">No audit started</div>
+        </div>
+      </div>
+      <div class="top-right">
+        <span id="engineStatus" class="pill muted" title="Plate reader status">Reader loading…</span>
+        <button id="helpBtn" class="icon-btn" aria-label="Help">?</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- SCAN -->
+      <section id="view-scan" class="view active" aria-label="Scan">
+        <div id="levelBar" class="chip-row" role="radiogroup" aria-label="Level or zone"></div>
+        <div id="camWrap">
+          <video id="video" playsinline muted autoplay></video>
+          <div id="guide"><span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="guide-label">Fit the plate inside the box</div></div>
+          <div id="camMsg" class="cam-msg hidden"></div>
+          <div id="zoomWrap" class="hidden"><input id="zoom" type="range" aria-label="Zoom"><span>Zoom</span></div>
+          <div id="counter" class="counter"></div>
+        </div>
+        <div id="scanControls">
+          <button id="torchBtn" class="ctl" aria-pressed="false"><span class="ico">🔦</span><span>Light</span></button>
+          <button id="manualBtn" class="ctl"><span class="ico">⌨</span><span>Type plate</span></button>
+          <button id="captureBtn" class="capture" aria-label="Capture plate"><span></span></button>
+          <button id="noPlateBtn" class="ctl"><span class="ico">⊘</span><span>No plate</span></button>
+          <button id="finishBtn" class="ctl"><span class="ico">✓</span><span>Finish</span></button>
+        </div>
+      </section>
+
+      <!-- LOG -->
+      <section id="view-log" class="view" aria-label="Audit log">
+        <div class="pad">
+          <div id="logHead"></div>
+          <input id="logSearch" class="input" type="search" placeholder="Search plate, unit, level…" autocomplete="off">
+          <div id="logFilters" class="chip-row small"></div>
+          <ul id="logList" class="scan-list"></ul>
+        </div>
+      </section>
+
+      <!-- REPORTS -->
+      <section id="view-reports" class="view" aria-label="Reports">
+        <div class="pad" id="reportsBody"></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="view-settings" class="view" aria-label="Settings">
+        <div class="pad" id="settingsBody"></div>
+      </section>
+    </main>
+
+    <nav id="tabs">
+      <button data-view="scan" class="active"><span class="ico">◉</span>Scan</button>
+      <button data-view="log"><span class="ico">☰</span>Log</button>
+      <button data-view="reports"><span class="ico">⇩</span>Reports</button>
+      <button data-view="settings"><span class="ico">⚙</span>Settings</button>
+    </nav>
+  </div>
+
+  <div id="resultBorder" aria-hidden="true"></div>
+  <div id="sheetBackdrop" class="hidden"></div>
+  <div id="sheet" class="hidden" role="dialog" aria-modal="true"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="updateBar" class="hidden">A new version is ready. <button id="updateBtn" class="btn small">Update now</button></div>
+
+  <script src="vendor/tesseract.min.js"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="vendor/exceljs.min.js"></script>
+  <script src="vendor/jszip.min.js"></script>
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="vendor/jspdf.plugin.autotable.min.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/vehicles.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
